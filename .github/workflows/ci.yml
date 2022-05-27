@@ -39,6 +39,9 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v2
+      
+      - name: container
+        uses: lukaspersonal/actions-demo@main
 
       ########################
       # Setup Docker build X #
