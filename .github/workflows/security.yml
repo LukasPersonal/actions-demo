@@ -43,10 +43,20 @@ jobs:
           # Full git history is needed to get a proper list of changed files
           fetch-depth: 0
 
+      - name: Wait for app CI success
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-build-success
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: CI
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+
       #####################
       # Initialize CodeQL #
       #####################
       - name: Initialize CodeQL
+        if: steps.wait-for-build-success.outputs.conclusion == 'success'
         uses: github/codeql-action/init@v1
         with:
           languages: python
@@ -55,4 +65,5 @@ jobs:
       # Run CodeQL Analysis #
       #######################
       - name: Perform CodeQL Analysis
+        if: steps.wait-for-build-success.outputs.conclusion == 'success'
         uses: github/codeql-action/analyze@v1
